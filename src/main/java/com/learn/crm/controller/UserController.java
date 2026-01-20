@@ -1,22 +1,35 @@
 package com.learn.crm.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.learn.crm.model.User;
+import com.learn.crm.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user")
 public class UserController {
+
+    @Autowired
+    UserService userService;
 
     @GetMapping
     public String userSecurity(){
-        return "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "    <h1>WEB PAGE</h1>\n" +
-                "</body>\n" +
-                "</html>";
+        return """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                </head>
+                <body>
+                    <h1>WEB PAGE</h1>
+                </body>
+                </html>""";
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> addUser(@RequestBody User user){
+        userService.createUser(user);
+        return new ResponseEntity<>("User added.", HttpStatus.CREATED);
     }
 }
