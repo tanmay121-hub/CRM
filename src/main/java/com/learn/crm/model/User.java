@@ -23,7 +23,7 @@
 
         private String username;
         private String password;
-
+        private String role;
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {

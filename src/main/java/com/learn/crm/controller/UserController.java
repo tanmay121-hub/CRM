@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("")
 public class UserController {
 
     @Autowired
@@ -27,9 +27,24 @@ public class UserController {
                 </html>""";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/public/register")
     public ResponseEntity<String> addUser(@RequestBody User user){
         userService.createUser(user);
         return new ResponseEntity<>("User added.", HttpStatus.CREATED);
+    }
+
+    @GetMapping("/public")
+    public String publicApi() {
+        return "This is public";
+    }
+
+    @GetMapping("/user")
+    public String userApi() {
+        return "Hello USER";
+    }
+
+    @GetMapping("/admin")
+    public String adminApi() {
+        return "Hello ADMIN";
     }
 }
