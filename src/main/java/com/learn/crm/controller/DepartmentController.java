@@ -30,7 +30,7 @@ public class DepartmentController {
     @GetMapping("/all")
     public ResponseEntity<List<Department>>findAll(){
         try{
-            return new ResponseEntity<>(departmentService.All(), HttpStatus.OK);
+            return new ResponseEntity<>(departmentService.AllDepartment(), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

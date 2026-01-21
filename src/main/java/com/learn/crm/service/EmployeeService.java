@@ -12,7 +12,12 @@ import com.learn.crm.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService{
@@ -26,6 +31,9 @@ public class EmployeeService{
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private EmployeeResponse mapToResponse(Employee employee) {
         EmployeeResponse response = new EmployeeResponse();
         BeanUtils.copyProperties(employee, response);
@@ -36,37 +44,38 @@ public class EmployeeService{
     @Transactional
     public EmployeeResponse createEmployee(EmployeeRequest request) {
 
+        if (employeeRepo.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Employee creation failed: Email " + request.getEmail() + " already exists.");
+        }
 
-        // Create and Save the User (Login Info)
         User newUser = new User();
         newUser.setUsername(request.getUsername());
-        newUser.setPassword(request.getPassword()); // In real app, encrypt this!
-        newUser.setRole(Role.MANAGER.name()); // Default role
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setRole(Role.USER);
 
         User savedUser = userRepo.save(newUser);
 
-        // Fetch the Department
+
         Department department = departmentRepo.findById(request.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Department not found"));
 
-        // Create the Employee
         Employee employee = new Employee();
-
         BeanUtils.copyProperties(request, employee);
-
         employee.setUser(savedUser);
         employee.setDepartment(department);
 
         if (request.getManagerId() != null) {
-            Employee manager = employeeRepo.findById(request.getManagerId())
-                    .orElse(null);
+            Employee manager = employeeRepo.findById(request.getManagerId()).orElse(null);
             employee.setManager(manager);
         }
 
-        //Save Employee
         Employee savedEmployee = employeeRepo.save(employee);
-
-        // Convert to Response DTO
         return mapToResponse(savedEmployee);
+    }
+
+    public List<EmployeeResponse> getAllEmployees() {
+        return employeeRepo.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 }

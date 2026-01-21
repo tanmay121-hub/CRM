@@ -22,7 +22,7 @@ public class DepartmentService{
         return "Department Added Successfully";
     }
 
-    public List<Department> All(){
+    public List<Department> AllDepartment(){
         return departmentRepo.findAll();
     }
 

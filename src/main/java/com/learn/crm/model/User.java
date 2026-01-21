@@ -1,6 +1,7 @@
     package com.learn.crm.model;
 
 
+    import com.learn.crm.enums.Role;
     import jakarta.persistence.*;
     import lombok.*;
     import org.jspecify.annotations.Nullable;
@@ -23,7 +24,9 @@
 
         private String username;
         private String password;
-        private String role;
+
+        @Enumerated(EnumType.STRING)
+        Role role;
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {

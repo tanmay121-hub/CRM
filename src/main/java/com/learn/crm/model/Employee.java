@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -63,4 +65,10 @@ public class Employee {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @ManyToMany
+    @JoinTable(name = "employees_project",joinColumns = @JoinColumn(name = "employee_id"),
+    inverseJoinColumns = @JoinColumn(name = "project_id"))
+    private Set<Project> projects = new HashSet<>();
+
 }
