@@ -8,24 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/admin")
 public class UserController {
 
     @Autowired
     UserService userService;
-
-    @GetMapping
-    public String userSecurity(){
-        return """
-                <!DOCTYPE html>
-                <html>
-                <head>
-                </head>
-                <body>
-                    <h1>WEB PAGE</h1>
-                </body>
-                </html>""";
-    }
 
     @PostMapping("/public/register")
     public ResponseEntity<String> addUser(@RequestBody User user){
@@ -33,18 +20,11 @@ public class UserController {
         return new ResponseEntity<>("User added.", HttpStatus.CREATED);
     }
 
-    @GetMapping("/public")
-    public String publicApi() {
-        return "This is public";
+
+    @GetMapping
+    public String admin() {
+        return "Admin access granted";
     }
 
-    @GetMapping("/user")
-    public String userApi() {
-        return "Hello USER";
-    }
 
-    @GetMapping("/admin")
-    public String adminApi() {
-        return "Hello ADMIN";
-    }
 }

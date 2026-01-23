@@ -26,4 +26,9 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeResponse>> getAllEmployees() {
         return ResponseEntity.ok(employeeService.getAllEmployees());
     }
+
+    @PostMapping("/assign/{pid}/{eid}")
+    public ResponseEntity<String> issueProject(@PathVariable Long pid , @PathVariable Long eid,@RequestParam Boolean isManager){
+        return ResponseEntity.ok(employeeService.assignProject(pid,eid,isManager));
+    }
 }

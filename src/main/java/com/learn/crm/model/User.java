@@ -26,7 +26,7 @@
         private String password;
 
         @Enumerated(EnumType.STRING)
-        Role role;
+        private Role role;
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {

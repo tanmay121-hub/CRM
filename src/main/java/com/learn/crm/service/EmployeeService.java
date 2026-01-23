@@ -5,9 +5,11 @@ import com.learn.crm.dto.EmployeeResponse;
 import com.learn.crm.enums.Role;
 import com.learn.crm.model.Department;
 import com.learn.crm.model.Employee;
+import com.learn.crm.model.Project;
 import com.learn.crm.model.User;
 import com.learn.crm.repository.DepartmentRepo;
 import com.learn.crm.repository.EmployeeRepo;
+import com.learn.crm.repository.ProjectRepo;
 import com.learn.crm.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -33,6 +35,9 @@ public class EmployeeService{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ProjectRepo projectRepo;
 
     private EmployeeResponse mapToResponse(Employee employee) {
         EmployeeResponse response = new EmployeeResponse();
@@ -77,5 +82,23 @@ public class EmployeeService{
         return employeeRepo.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    public String assignProject(Long projectId, Long employeeId, boolean isManager){
+
+        Project project = projectRepo.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        Employee employee = employeeRepo.findById(employeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        employee.getProjects().add(project);
+
+        if(isManager){
+            project.setManager(employee);
+        }
+
+        employeeRepo.save(employee);
+        return "Project assigned successfully";
     }
 }
